@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Slider Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .color-display {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+        }
+        .slider-container {
+            margin-bottom: 10px;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        #hexCode {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="color-display" id="colorDisplay"></div>
+        <div class="slider-container">
+            <label for="hue">Hue:</label>
+            <input type="range" id="hue" min="0" max="360" value="0">
+        </div>
+        <div class="slider-container">
+            <label for="saturation">Saturation:</label>
+            <input type="range" id="saturation" min="0" max="100" value="100">
+        </div>
+        <div class="slider-container">
+            <label for="lightness">Lightness:</label>
+            <input type="range" id="lightness" min="0" max="100" value="50">
+        </div>
+        <div id="hexCode"></div>
+    </div>
+
+    <script>
+        const hueSlider = document.getElementById('hue');
+        const saturationSlider = document.getElementById('saturation');
+        const lightnessSlider = document.getElementById('lightness');
+        const colorDisplay = document.getElementById('colorDisplay');
+        const hexCodeDisplay = document.getElementById('hexCode');
+
+        function updateColor() {
+            const hue = hueSlider.value;
+            const saturation = saturationSlider.value;
+            const lightness = lightnessSlider.value;
+            const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            colorDisplay.style.backgroundColor = color;
+            hexCodeDisplay.textContent = hslToHex(hue, saturation, lightness);
+        }
+
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        hueSlider.addEventListener('input', updateColor);
+        saturationSlider.addEventListener('input', updateColor);
+        lightnessSlider.addEventListener('input', updateColor);
+
+        updateColor(); // Initial color update
+    </script>
+</body>
+</html>
